@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Text } from '@mantine/core';
+import { Button, Container, Text, TextInput } from '@mantine/core';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragOverlay } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { SortableItem } from './SortableItem'; // Create a new file for this component
+import axios from 'axios';
 
 interface Complaint {
     title: string;
@@ -12,9 +13,10 @@ interface Complaint {
 interface AssessComplaintsProps {
     industries: string[];
     complaints: Complaint[];
+    receiveSolutions: (solutions: any[]) => void;
 }
 
-export default function AssessComplaints({ industries, complaints }: AssessComplaintsProps) {
+export default function AssessComplaints({ industries, complaints, receiveSolutions }: AssessComplaintsProps) {
     //   const [items, setItems] = useState(complaints);
     const [activeId, setActiveId] = useState<string | null>(null);
 
@@ -92,8 +94,88 @@ export default function AssessComplaints({ industries, complaints }: AssessCompl
     ]);
 
     useEffect(() => {
-        setItems(complaints);
+        if (complaints.length > 0) {
+            setItems(complaints);
+        } else {
+            setItems([
+                {
+                    "title": "Lack of Exclusive Games",
+                    "directComments": [
+                        "We need more exclusive titles.",
+                        "There aren't enough games unique to this platform."
+                    ]
+                },
+                {
+                    "title": "High Console Prices",
+                    "directComments": [
+                        "The cost of the console is too high.",
+                        "We need more affordable options for gaming systems."
+                    ]
+                },
+                {
+                    "title": "Online Service Issues",
+                    "directComments": [
+                        "The multiplayer service is unreliable.",
+                        "Online connectivity drops frequently."
+                    ]
+                },
+                {
+                    "title": "Limited Third-Party Game Support",
+                    "directComments": [
+                        "Not many third-party developers are making games for this platform.",
+                        "We want more third-party game options."
+                    ]
+                },
+                {
+                    "title": "Frequent Hardware Problems",
+                    "directComments": [
+                        "Our console keeps crashing.",
+                        "There are too many hardware failures."
+                    ]
+                },
+                {
+                    "title": "Poor Customer Support",
+                    "directComments": [
+                        "Customer service doesn't help resolve issues in a timely manner.",
+                        "Support representatives aren't knowledgeable."
+                    ]
+                },
+                {
+                    "title": "Lack of Backward Compatibility",
+                    "directComments": [
+                        "We can't play older games on the new system.",
+                        "Need backward compatibility for legacy titles."
+                    ]
+                },
+                {
+                    "title": "Limited Battery Life for Controllers",
+                    "directComments": [
+                        "Controller battery life is too short.",
+                        "We have to recharge the controllers too often."
+                    ]
+                },
+                {
+                    "title": "Game Prices Are Too High",
+                    "directComments": [
+                        "New game releases are too expensive.",
+                        "We need more frequent sales and discounts on games."
+                    ]
+                },
+                {
+                    "title": "Slow Software Updates",
+                    "directComments": [
+                        "System updates take forever to download and install.",
+                        "Software patches are too infrequent."
+                    ]
+                }
+            ]);
+        }
     }, [complaints]);
+
+    useEffect(() => {
+        console.log(complaints);
+        console.log('fgjhuadsfhgauck');
+    }, []);
 
     const sensors = useSensors(
         useSensor(PointerSensor),
@@ -125,10 +207,37 @@ export default function AssessComplaints({ industries, complaints }: AssessCompl
         );
     }
 
+    const [userNotes, setUserNotes] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [solutions, setSolutions] = useState<string[]>([]);
+
+    const handleSubmit = async () => {
+        setLoading(true);
+
+        try {
+            const response = await axios.post('https://btwn-dffde658ab26.herokuapp.com/top-ideas', {
+                complaints: items,
+                user_notes: userNotes,
+                industries: industries,
+            });
+
+            const solutionsData = response.data.solutions;
+            setSolutions(solutionsData);
+            receiveSolutions(solutionsData);
+
+            console.log('Solutions:', solutionsData);
+        } catch (error) {
+            console.error('Error fetching top ideas:', error);
+            alert('An error occurred while fetching top ideas. Please try again.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
-        <Container mt={40} h={1000}>
+        <Container mt={40} h={2500}>
             <Text style={{ fontSize: 30 }} ta="center" mb="xl">
-                Top complaints in {industries.join(', ')}
+                Top complaints about {industries.join(', ')}
             </Text>
 
             <DndContext
@@ -138,8 +247,8 @@ export default function AssessComplaints({ industries, complaints }: AssessCompl
                 onDragStart={(event) => setActiveId(event.active.id as string)}
             >
                 <SortableContext items={items.map((item) => item.title)} strategy={verticalListSortingStrategy}>
-                    {items.map((item) => (
-                        <SortableItem key={item.title} id={item.title} item={item} />
+                    {items.map((item, index) => (
+                        <SortableItem key={item.title} id={item.title} item={item} index={index} />
                     ))}
                 </SortableContext>
 
@@ -151,6 +260,26 @@ export default function AssessComplaints({ industries, complaints }: AssessCompl
                     ) : null}
                 </DragOverlay>
             </DndContext>
+
+            <TextInput
+                label="Enter your notes"
+                value={userNotes}
+                onChange={(event) => setUserNotes(event.target.value)}
+                mt="md"
+                mb="lg"
+            />
+
+            <Button
+                onClick={handleSubmit}
+                mt="lg"
+                fullWidth
+                style={{ backgroundColor: "#E66F00" }}
+                c="white"
+                h={42}
+                loading={loading}
+            >
+                {loading ? 'Loading...' : 'Discover Solutions'}
+            </Button>
         </Container>
     );
 }

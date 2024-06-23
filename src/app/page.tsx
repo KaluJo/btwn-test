@@ -1,13 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { Flex, Text, Button } from "@mantine/core";
+import { Flex, Text, Button, Image } from "@mantine/core";
 import ScrapeOptions from "./_components/home/ScrapeOptions";
 import ChooseIndustries from "./_components/home/ChooseIndustries";
 import GetStarted from "./_components/home/GetStarted";
 import { DropResume } from "./_components/home/DropResume";
 import AssessCompetitors from "./_components/home/AssessCompetitors";
 import AssessComplaints from "./_components/home/AssessComplaints";
+import AssessSolutions from "./_components/home/AssessSolutions";
 
 export default function Home() {
   const [currentStep, setCurrentStep] = useState(1);
@@ -31,14 +32,16 @@ export default function Home() {
   const [topCompanies, setTopCompanies] = useState<string[]>([]);
   const [selectedCompanies, setSelectedCompanies] = useState<string[]>([]);
   const [topComplaints, setTopComplaints] = useState<any[]>([]);
+  const [solutions, setSolutions] = useState<any[]>([]);
 
   const steps = [
-    "discover real problems btwn people and the world",
+    "discover problems btwn people and the world",
     "lets begin by analyzing the founding team",
     "select industries your team is interested in",
     "assess relevant companies in your problem space",
-    "scrape and analyze pain points from the web",
-    "analyze and extract insights from your data",
+    "analyze pain points from the web",
+    "reorder to prioritize the top complaints",
+    "analyze the solutions",
   ];
 
   const getStarted = (sessionId: string) => {
@@ -74,6 +77,14 @@ export default function Home() {
 
     console.log('Top Complaints:', tC);
 
+    setCurrentStep(6);
+  }
+
+  const receiveSolutions = (solutions: string[]) => {
+    setSolutions(solutions);
+
+    console.log('Top Solutions:', solutions);
+
     setCurrentStep(7);
   }
 
@@ -96,18 +107,20 @@ export default function Home() {
           {steps[currentStep - 1]}
         </Text>
       </Flex>
-      <Flex className={(currentStep === 4 || currentStep === 6) ? "step-container-big" : "step-container"}>
+
+      <Flex className={(currentStep === 4 || currentStep === 6 || currentStep === 7) ? "step-container-big" : "step-container"}>
         {steps.map((_, index) => (
           <div
             key={index}
-            className={`${index === 5 ? 'step-draggable' : 'step'} ${index + 1 === currentStep ? 'active' : index + 1 < currentStep ? 'prev' : ''}`}
+            className={`${(index === 5 || index === 7) ? 'step-draggable' : 'step'} ${index + 1 === currentStep ? 'active' : index + 1 < currentStep ? 'prev' : ''}`}
           >
             {index + 1 === 1 && <GetStarted getStarted={getStarted} />}
             {index + 1 === 2 && <DropResume sessionId={sessionId} receiveIndustries={receiveIndustries} />}
             {index + 1 === 3 && <ChooseIndustries industries={industries} receiveCompetitors={receiveCompetitors} />}
             {index + 1 === 4 && <AssessCompetitors industries={selectedIndustries} topCompanies={topCompanies} receiveSelectedCompanies={receiveSelectedCompanies} />}
-            {index + 1 === 5 && <ScrapeOptions industries={selectedIndustries} selectedCompanies={selectedCompanies} receiveComplaints={receiveComplaints} />}
-            {currentStep === 6 && <AssessComplaints industries={selectedIndustries} complaints={topComplaints} />}
+            {index + 1 === 5 && <ScrapeOptions sessionId={sessionId} industries={selectedIndustries} selectedCompanies={selectedCompanies} receiveComplaints={receiveComplaints} />}
+            {currentStep === 6 && <AssessComplaints industries={selectedIndustries} complaints={topComplaints} receiveSolutions={receiveSolutions} />}
+            {index + 1 === 7 && <AssessSolutions solutions={solutions} />}
           </div>
         ))}
       </Flex>

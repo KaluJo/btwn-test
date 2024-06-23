@@ -9,9 +9,10 @@ interface SortableItemProps {
     title: string;
     directComments: string[];
   };
+  index: number;
 }
 
-export function SortableItem({ id, item }: SortableItemProps) {
+export function SortableItem({ id, item, index }: SortableItemProps) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
 
   const style = {
@@ -28,7 +29,9 @@ export function SortableItem({ id, item }: SortableItemProps) {
 
   return (
     <li ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      <Text fw={700}>{item.title}</Text>
+      <Text fw={700}>
+        {index + 1}. {item.title}
+      </Text>
       {item.directComments.length > 0 && (
         <ul style={{ marginTop: '8px', paddingLeft: '20px' }}>
           {item.directComments.map((comment, index) => (
