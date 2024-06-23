@@ -216,10 +216,16 @@ export default function AssessComplaints({ industries, complaints, receiveSoluti
                 industries: industries,
             });
 
-            const solutionsData = response.data.solutions;
+            let solutionsData = response.data.solutions;
+
+            if (typeof solutionsData === 'string' && solutionsData.startsWith('json')) {
+                solutionsData = solutionsData.substring(4).trim();
+                solutionsData = JSON.parse(solutionsData);
+            }
+    
             setSolutions(solutionsData);
             receiveSolutions(solutionsData);
-
+    
             console.log('Solutions:', solutionsData);
         } catch (error) {
             console.error('Error fetching top ideas:', error);
