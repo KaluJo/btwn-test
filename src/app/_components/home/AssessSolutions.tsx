@@ -10,6 +10,8 @@ interface AssessSolutionsProps {
     solutions: Solution[];
 }
 
+// test
+
 export default function AssessSolutions({ solutions }: AssessSolutionsProps) {
     const [processedSolutions, setProcessedSolutions] = useState<Solution[]>([]);
 
