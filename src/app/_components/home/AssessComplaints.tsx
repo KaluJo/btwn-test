@@ -176,11 +176,6 @@ export default function AssessComplaints({ industries, complaints, receiveSoluti
         }
     }, [complaints]);
 
-    useEffect(() => {
-        console.log(complaints);
-        console.log('fgjhuadsfhgauck');
-    }, []);
-
     const sensors = useSensors(
         useSensor(PointerSensor),
         useSensor(KeyboardSensor, {
