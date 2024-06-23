@@ -93,6 +93,10 @@ export default function AssessComplaints({ industries, complaints, receiveSoluti
         }
     ]);
 
+    const [userNotes, setUserNotes] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [solutions, setSolutions] = useState<string[]>([]);
+
     useEffect(() => {
         if (complaints.length > 0) {
             setItems(complaints);
@@ -206,10 +210,6 @@ export default function AssessComplaints({ industries, complaints, receiveSoluti
             </Container>
         );
     }
-
-    const [userNotes, setUserNotes] = useState('');
-    const [loading, setLoading] = useState(false);
-    const [solutions, setSolutions] = useState<string[]>([]);
 
     const handleSubmit = async () => {
         setLoading(true);
