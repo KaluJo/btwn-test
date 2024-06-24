@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Container, Text, TextInput } from '@mantine/core';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragOverlay } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { SortableItem } from './SortableItem'; // Create a new file for this component
+import { SortableItem } from './SortableItem';
 import axios from 'axios';
 
 interface Complaint {
@@ -17,7 +17,6 @@ interface AssessComplaintsProps {
 }
 
 export default function AssessComplaints({ industries, complaints, receiveSolutions }: AssessComplaintsProps) {
-    //   const [items, setItems] = useState(complaints);
     const [activeId, setActiveId] = useState<string | null>(null);
 
     const [items, setItems] = useState([

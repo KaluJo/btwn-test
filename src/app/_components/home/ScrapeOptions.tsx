@@ -77,7 +77,7 @@ export default function ScrapeOptions({ sessionId, industries, selectedCompanies
                 },
             });
 
-            await new Promise((resolve) => setTimeout(resolve, 30000)); // Wait for 30 seconds
+            await new Promise((resolve) => setTimeout(resolve, 30000));
 
             let complaintsData: string | any = null;
             let attempts = 0;
@@ -96,7 +96,7 @@ export default function ScrapeOptions({ sessionId, industries, selectedCompanies
                 }
 
                 if (!complaintsData) {
-                    await new Promise((resolve) => setTimeout(resolve, 10000)); // Wait for 10 seconds before the next attempt
+                    await new Promise((resolve) => setTimeout(resolve, 10000));
                 }
 
                 attempts++;

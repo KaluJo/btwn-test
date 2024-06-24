@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Container, Text, MultiSelect, Button, Flex } from '@mantine/core';
-import axios from 'axios'; // Make sure to install axios: npm install axios
+import axios from 'axios';
 
 interface ChooseIndustriesProps {
     industries: string[];
